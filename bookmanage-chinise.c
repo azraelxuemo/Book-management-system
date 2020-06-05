@@ -1526,7 +1526,7 @@ int jieshu()
    {
    		if(row[0]==NULL)
    	{
-   		printf("Sorry,our library do not have this book,please try again \n");
+   		printf("对不起我们图书馆没有这本书 \n");
    		return 0;
 	   }else break;
    }
@@ -1748,7 +1748,7 @@ int huanshu()
     while ((row = mysql_fetch_row(result)))
 	{
 		if(row[0]==NULL)
-		{printf("you do not have this Book borrowing records,please try again\n");
+		{printf("您没有该图书借阅记录，请重新输入\n");
 		return 0;
 		}		
 		 strcpy(maxid23,row[0]);
