@@ -21,3 +21,13 @@ my databasename is library
 
 as the guide to configure mysql
 Please read configure
+
+for chinese help
+you can read my blog at CSDN
+https://blog.csdn.net/azraelxuemo/article/details/106232038
+
+and if you want to learn more
+welcome to my little home for more blogs
+https://blog.csdn.net/azraelxuemo
+
+thanks
