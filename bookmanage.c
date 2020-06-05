@@ -10,6 +10,7 @@
 #define loginusername "username"
 #define loginpassword "password"
 #define mysqlname "library"
+
 MYSQL *mysql;
 MYSQL_RES *result;
 MYSQL_ROW row; 
@@ -23,7 +24,7 @@ static num=0;
 int newatoi(char *s);
 int isnum(char s[]);
 
-void login();
+int login();
 void zhuce();
 void zhuxiao(); 
 
@@ -68,10 +69,10 @@ void modifywork();
 
 void showalluser();
 
-void jieshu();
+int jieshu();
 int suretob(char *book_name);
 
-void huanshu();
+int huanshu();
 int suretoh(char *book_name);
 void showuserborrow();
 char *DeletS2(char *s1,const char *s2);
@@ -80,31 +81,31 @@ int main()
 {
 	mysql=mysql_init(NULL);   
 	mysql_real_connect(mysql,mysqlip,loginusername,loginpassword,mysqlname,port,NULL,0);
-    const char * code = "SET NAMES GB2312"; 
+    const char * code = "SET NAMES GB2312";  
     mysql_real_query(mysql,code,(unsigned int)strlen(code));
 	while(1)
 	{
-		printf("»¶Ó­ÄúÊ¹ÓÃÎÒÃÇÍ¼Êé¹İÏµÍ³·şÎñ: 1.µÇÂ¼, 2.×¢²á 3.×¢Ïú,4.ÍË³ö\n");
+		printf("æ¬¢è¿æ‚¨ä½¿ç”¨æˆ‘ä»¬å›¾ä¹¦é¦†ç³»ç»ŸæœåŠ¡: 1.ç™»å½•, 2.æ³¨å†Œ 3.æ³¨é”€,4.é€€å‡º\n");
 		int choice;
-		printf("ÇëÊäÈëÄúµÄÑ¡Ôñ:");
+		printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©:");
 		scanf("%d",&choice);
 		switch(choice)
 		{
 		case 1:login();break;
 		case 2 :zhuce();break;
 		case 3:zhuxiao();break;
-		case 4 :printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öÍ¼Êé¹İÏµÍ³·şÎñ\n");exit(1);
-		default:printf("ÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë\n");break;
+		case 4 :printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºå›¾ä¹¦é¦†ç³»ç»ŸæœåŠ¡\n");exit(1);
+		default:printf("è¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥\n");break;
 		}
 	}			
 }
 
-void login()
+int login()
 {
-	printf("ÇëÊäÈëÓÃ»§Ãû:");
+	printf("è¯·è¾“å…¥ç”¨æˆ·å:");
 	scanf("%s",username);
 	char passwd[20];
-	printf("ÇëÊäÈëÃÜÂë:");
+	printf("è¯·è¾“å…¥å¯†ç :");
 	scanf("%s",passwd);
     char s[100]=" select id from users where username=";
     strcat(s,"'");
@@ -123,24 +124,24 @@ void login()
     id1=newatoi(id);
     if(id1==0)
 {
-	printf("ÕËºÅ»òÕßÃÜÂë´íÎó£¬ÇëÖØÊÔ\n\n");
+	printf("è´¦å·æˆ–è€…å¯†ç é”™è¯¯ï¼Œè¯·é‡è¯•\n\n");
 	num=num+1;
 	if(num>3)
 	 {
-	 	printf("´íÎó´ÎÊı¹ı¶à£¬ÍË³ö·şÎñ\n");
+	 	printf("é”™è¯¯æ¬¡æ•°è¿‡å¤šï¼Œé€€å‡ºæœåŠ¡\n");
 	 	exit(1);
 	 }
 }
    else 	
 	{
-		printf("µÇÂ¼³É¹¦£¬¼´½«½øÈëÊ¹ÓÃ½çÃæ\n");
+		printf("ç™»å½•æˆåŠŸï¼Œå³å°†è¿›å…¥ä½¿ç”¨ç•Œé¢\n");
 	    int choice;
-	    printf("µ±Ç°µÇÂ¼ÓÃ»§ĞÅÏ¢:\n");
+	    printf("å½“å‰ç™»å½•ç”¨æˆ·ä¿¡æ¯:\n");
 	    showuserinfo();
 		while(1)
 {
-	printf("»¶Ó­ÄúÊ¹ÓÃÎÒÃÇÍ¼Êé¹İÏµÍ³·şÎñ:1.²éÑ¯·şÎñ,2.Í¼ÊéÊı¾İ¹ÜÀí·şÎñ(Ö»Ö§³Ö¹ÜÀíÔ±),3.½èÊé·şÎñ,4.»¹Êé·şÎñ,5.ÓÃ»§ĞÅÏ¢ĞŞ¸Ä·şÎñ,6.ÍË³ö·şÎñ\n");
-	printf("ÇëÊäÈëÄúÏëÊ¹ÓÃµÄ·şÎñ:"); 
+	printf("æ¬¢è¿æ‚¨ä½¿ç”¨æˆ‘ä»¬å›¾ä¹¦é¦†ç³»ç»ŸæœåŠ¡:1.æŸ¥è¯¢æœåŠ¡,2.å›¾ä¹¦æ•°æ®ç®¡ç†æœåŠ¡(åªæ”¯æŒç®¡ç†å‘˜),3.å€Ÿä¹¦æœåŠ¡,4.è¿˜ä¹¦æœåŠ¡,5.ç”¨æˆ·ä¿¡æ¯ä¿®æ”¹æœåŠ¡,6.é€€å‡ºæœåŠ¡\n");
+	printf("è¯·è¾“å…¥æ‚¨æƒ³ä½¿ç”¨çš„æœåŠ¡:"); 
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -149,8 +150,8 @@ void login()
 		case 3:jieshu();break;
 		case 4:huanshu();break;
 		case 5:useradmin();break;
-		case 6 :printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öÍ¼Êé¹İÏµÍ³·şÎñ\n");return 0;break;
-		default:printf("ÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë\n");break;
+		case 6 :printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºå›¾ä¹¦é¦†ç³»ç»ŸæœåŠ¡\n");return 0;break;
+		default:printf("è¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥\n");break;
 	}
 }
 	}
@@ -158,15 +159,15 @@ void login()
 
 void zhuce()
 {
-	printf("ÇëÊäÈëÓÃ»§Ãû:");
+	printf("è¯·è¾“å…¥ç”¨æˆ·å:");
 	scanf("%s",username);
 	char passwd[20];
-	printf("ÇëÊäÈëÃÜÂë:");
+	printf("è¯·è¾“å…¥å¯†ç :");
 	scanf("%s",passwd);
 	char sex[8];
-	printf("ÇëÊäÈëÄúµÄĞÔ±ğ£¬ÄĞ»òÅ®:");
+	printf("è¯·è¾“å…¥æ‚¨çš„æ€§åˆ«ï¼Œç”·æˆ–å¥³:");
 	scanf("%s",sex);
-	printf("ÇëÊäÈëÄúµÄ¹¤×÷µ¥Î»:");
+	printf("è¯·è¾“å…¥æ‚¨çš„å·¥ä½œå•ä½:");
 	char workplace[20];
 	scanf("%s",workplace);
     char s[200]=" select id from users where username=";
@@ -184,10 +185,10 @@ void zhuce()
     char id2[8];
     itoa(id1,id2,10);
     if(strcmp(id2,id)==0)
-    printf("Ê§°Ü!¸ÃÓÃ»§ÃûÒÑ¾­´æÔÚ,ÇëÖØĞÂ×¢²á\n");  
+    printf("å¤±è´¥!è¯¥ç”¨æˆ·åå·²ç»å­˜åœ¨,è¯·é‡æ–°æ³¨å†Œ\n");  
     else 
 { 
-    printf("¸ÃÓÃ»§Ãû¿ÉÓÃ£¬ÂíÉÏÎªÄú×¢²á\n");
+    printf("è¯¥ç”¨æˆ·åå¯ç”¨ï¼Œé©¬ä¸Šä¸ºæ‚¨æ³¨å†Œ\n");
     char m[200]="insert into users  (username,password,sex,workplace) values('";
     strcat(m,username);
     strcat(m,"','");
@@ -200,22 +201,22 @@ void zhuce()
     strcat(m,")");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
      {
-     	printf("ÓÃ»§×¢²áÊ§°Ü\n");
+     	printf("ç”¨æˆ·æ³¨å†Œå¤±è´¥\n");
 		 exit(1); 
 	 }
      else ;
-	 printf("¹§Ï²Äú×¢²á³É¹¦\n");
-     printf("ÕâÊÇÄúµÄÓÃ»§ĞÅÏ¢ÇëÊÕÏÂ:\n\n");
+	 printf("æ­å–œæ‚¨æ³¨å†ŒæˆåŠŸ\n");
+     printf("è¿™æ˜¯æ‚¨çš„ç”¨æˆ·ä¿¡æ¯è¯·æ”¶ä¸‹:\n\n");
      showuserinfo();
 }
 }
 
 void zhuxiao()
 {
-	printf("ÇëÊäÈëÓÃ»§Ãû:");
+	printf("è¯·è¾“å…¥ç”¨æˆ·å:");
 	scanf("%s",username);
 	char passwd[20];
-	printf("ÇëÊäÈëÃÜÂë:");
+	printf("è¯·è¾“å…¥å¯†ç :");
 	scanf("%s",passwd);
     char s[200]=" select id from users where username=";
     strcat(s,"'");
@@ -252,7 +253,7 @@ void zhuxiao()
 	char id[8];
 	if(mysql_real_query(mysql,w,(unsigned int)strlen(w)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÓÃ»§³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤ç”¨æˆ·å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -265,7 +266,7 @@ void zhuxiao()
 	strcat(o,id);
 	if(mysql_real_query(mysql,o,(unsigned int)strlen(o)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÓÃ»§³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤ç”¨æˆ·å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -273,29 +274,28 @@ void zhuxiao()
 	strcat(n,id);
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞÖØĞÂÅÅĞòÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œé‡æ–°æ’åºæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
-	else printf("×¢Ïú³É¹¦\n") ;
+	else printf("æ³¨é”€æˆåŠŸ\n") ;
 	}
 	else 
 	{
-		printf("ÃÜÂëÊäÈë´íÎó£¬ÎŞ·¨×¢Ïú£¬ÇëÖØĞÂ³¢ÊÔ\n");
+		printf("å¯†ç è¾“å…¥é”™è¯¯ï¼Œæ— æ³•æ³¨é”€ï¼Œè¯·é‡æ–°å°è¯•\n");
 	}
     }
     else 
 {
-    printf("¸ÃÓÃ»§²»´æÔÚ£¬ÇëÖØĞÂ×¢Ïú\n");
+    printf("è¯¥ç”¨æˆ·ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°æ³¨é”€\n");
 }
 }
-
 
 
 int bookadmin()
 {
 	if(strcmp(username,"root")!=0)
 	{
-		printf("ÄãÃ»ÓĞÈ¨ÏŞ½øÈë¸ÃÏµÍ³\n");
+		printf("ä½ æ²¡æœ‰æƒé™è¿›å…¥è¯¥ç³»ç»Ÿ\n");
 		return 0; 
 	}
     else
@@ -303,8 +303,8 @@ int bookadmin()
 	while(1)
 {
     int choice;
-	printf("Ö§³ÖµÄÍ¼ÊéÊı¾İ¹ÜÀí·½Ê½ÈçÏÂ:   1.Ìí¼ÓÊé¼®,   2.É¾³ıÊé¼®,  3.ĞŞ¸ÄÊé¼®Êı¾İ,   4.ÏÔÊ¾µ±Ç°ËùÓĞÊé¼®,    5.ÏÔÊ¾µ±Ç°ËùÓĞÓÃ»§ĞÅÏ¢,6.ÍË³öÍ¼ÊéÊı¾İ¹ÜÀí·şÎñ\n");
-	printf("ÇëÊäÈëÄúµÄÍ¼ÊéÊı¾İ¹ÜÀí·½Ê½:");
+	printf("æ”¯æŒçš„å›¾ä¹¦æ•°æ®ç®¡ç†æ–¹å¼å¦‚ä¸‹:   1.æ·»åŠ ä¹¦ç±,   2.åˆ é™¤ä¹¦ç±,  3.ä¿®æ”¹ä¹¦ç±æ•°æ®,   4.æ˜¾ç¤ºå½“å‰æ‰€æœ‰ä¹¦ç±,    5.æ˜¾ç¤ºå½“å‰æ‰€æœ‰ç”¨æˆ·ä¿¡æ¯,6.é€€å‡ºå›¾ä¹¦æ•°æ®ç®¡ç†æœåŠ¡\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„å›¾ä¹¦æ•°æ®ç®¡ç†æ–¹å¼:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -313,8 +313,8 @@ int bookadmin()
 		case 3:modifybook();break;
 		case 4:showallbook();break;
 		case 5:showalluser();break;
-		case 6:printf("¸ĞĞ»ÄúÊ¹ÓÃÍ¼ÊéÊı¾İ¹ÜÀí·şÎñ£¬¼´½«ÍË³öÍ¼ÊéÊı¾İ¹ÜÀí·şÎñ\n");return 0;
-		default:printf("\n\nÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë\n\n");break;
+		case 6:printf("æ„Ÿè°¢æ‚¨ä½¿ç”¨å›¾ä¹¦æ•°æ®ç®¡ç†æœåŠ¡ï¼Œå³å°†é€€å‡ºå›¾ä¹¦æ•°æ®ç®¡ç†æœåŠ¡\n");return 0;
+		default:printf("\n\nè¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥\n\n");break;
 	}
 }
 }
@@ -325,7 +325,7 @@ void addbook()
 	char maxid[8];
 	 if(mysql_real_query(mysql,p,(unsigned int)strlen(p)))
     {
-    	printf("²éÑ¯Í¼Êé¹ÜÀíÊı¾İ¿âµ±Ç°×î´óidÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æŸ¥è¯¢å›¾ä¹¦ç®¡ç†æ•°æ®åº“å½“å‰æœ€å¤§idæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -333,7 +333,7 @@ void addbook()
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
     strcat(maxid,row[0]);
-    mysql_free_result(result);//²éÑ¯µ±Ç°Êı¾İ¿â×î´óid£¬ÓÃÓÚ½â¾ö×ÔÔöµÄÎÊÌâ 
+    mysql_free_result(result);//æŸ¥è¯¢å½“å‰æ•°æ®åº“æœ€å¤§idï¼Œç”¨äºè§£å†³è‡ªå¢çš„é—®é¢˜ 
     
 	int maxid1;
     char w[100]="alter table book auto_increment="; 
@@ -342,7 +342,7 @@ void addbook()
     strcat(w,maxid2);
     if(mysql_real_query(mysql,w,(unsigned int)strlen(w)))
     {
-    	printf("ĞŞ¸Äµ±Ç°×ÔÔöid³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("ä¿®æ”¹å½“å‰è‡ªå¢idå‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -352,31 +352,31 @@ void addbook()
 	char remain[3];
 	char year[10];
 	char  type[20];
-	printf("ÇëÊäÈëÍ¼ÊéÈ«³Æ:");
+	printf("è¯·è¾“å…¥å›¾ä¹¦å…¨ç§°:");
 	scanf("%s",book_name);
 	strcat(s,"'");
 	strcat(s,book_name);
 	strcat(s,"'");
 	strcat(s,",");
-	printf("ÇëÊäÈë×÷ÕßÈ«Ãû:");
+	printf("è¯·è¾“å…¥ä½œè€…å…¨å:");
 	scanf("%s",writer_name);
 	strcat(s,"'");
 	strcat(s,writer_name);
 	strcat(s,"'");
 	strcat(s,",");
-	printf("ÇëÊäÈëÊéµÄÀàĞÍ:");
+	printf("è¯·è¾“å…¥ä¹¦çš„ç±»å‹:");
 	scanf("%s",type);
 	strcat(s,"'");
 	strcat(s,type);
 	strcat(s,"'");
 	strcat(s,",");
-	printf("ÇëÊäÈëÄ¿Ç°Í¼Êé¹İ¸ÃÍ¼ÊéµÄÓàÁ¿:");
+	printf("è¯·è¾“å…¥ç›®å‰å›¾ä¹¦é¦†è¯¥å›¾ä¹¦çš„ä½™é‡:");
 	scanf("%s",remain);
 	strcat(s,remain);
 	strcat(s,",");
 	strcat(s,"0");
 	strcat(s,",");
-	printf("ÇëÊäÈë¸ÃÊé³ö°æµÄÊ±¼ä:");
+	printf("è¯·è¾“å…¥è¯¥ä¹¦å‡ºç‰ˆçš„æ—¶é—´:");
 	scanf("%s",year);
 	strcat(s,year);
 	strcat(s,",");
@@ -384,18 +384,18 @@ void addbook()
 	strcat(s,")");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞÌí¼ÓÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œæ·»åŠ å›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼ÊéÌí¼Ó³É¹¦£¬Ìí¼Ó½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦æ·»åŠ æˆåŠŸï¼Œæ·»åŠ ç»“æœå¦‚ä¸‹\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
     strcat(m,book_name);
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ìí¼ÓÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ·»åŠ å›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -421,17 +421,17 @@ int delbook()
 {
 	while(1)
 	{
-	printf("ÇëÊäÈëÄúÏëÒªÍ¨¹ıÄÄÖÖ·½Ê½É¾³ıÊé¼®£º1.id,2.ÊéµÄÈ«³Ì,3.×÷ÕßÃû³Æ,4.ÍË³öÉ¾³ı\n");
+	printf("è¯·è¾“å…¥æ‚¨æƒ³è¦é€šè¿‡å“ªç§æ–¹å¼åˆ é™¤ä¹¦ç±ï¼š1.id,2.ä¹¦çš„å…¨ç¨‹,3.ä½œè€…åç§°,4.é€€å‡ºåˆ é™¤\n");
 	int choice;
-	printf("ÇëÊäÈëÄúµÄÑ¡Ôñ:");
+	printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
 		case 1:delbyid();break;
 		case 2:delbybookname();break;
 		case 3:delbywritername();break;
-		case 4:printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öÍ¼ÊéÉ¾³ı·şÎñ\n");return 0;
-		default:printf("\n\nÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë");break; 
+		case 4:printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºå›¾ä¹¦åˆ é™¤æœåŠ¡\n");return 0;
+		default:printf("\n\nè¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥");break; 
 	}
 }
 }
@@ -439,12 +439,12 @@ void delbyid()
 {
 	char s[100]=" delete from book where id=";
 	char id[8];
-	printf("ÇëÊäÈëÄúÒªÉ¾³ıµÄÍ¼Êéid:");
+	printf("è¯·è¾“å…¥æ‚¨è¦åˆ é™¤çš„å›¾ä¹¦id:");
 	scanf("%s",id);
 	strcat(s,id);
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÍ¼Êé³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤å›¾ä¹¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -452,16 +452,16 @@ void delbyid()
 	strcat(n,id);
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞÖØĞÂÅÅĞòÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œé‡æ–°æ’åºæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
-	printf("Í¼ÊéÉ¾³ı³É¹¦£¬µ±Ç°Ê£ÓàËùÓĞÍ¼ÊéÊı¾İ½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦åˆ é™¤æˆåŠŸï¼Œå½“å‰å‰©ä½™æ‰€æœ‰å›¾ä¹¦æ•°æ®ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book ";
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -488,7 +488,7 @@ void delbybookname()
 		printf("\n\n");
 	char s[100]=" select id from book where name=";
 	char name[20];
-	printf("ÇëÊäÈëÄúÒªÉ¾³ıµÄÍ¼ÊéÈ«³Æ:");
+	printf("è¯·è¾“å…¥æ‚¨è¦åˆ é™¤çš„å›¾ä¹¦å…¨ç§°:");
 	scanf("%s",name);
 	strcat(s,"'"); 
 	strcat(s,name);
@@ -496,7 +496,7 @@ void delbybookname()
 	char id[8];
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÍ¼Êé³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤å›¾ä¹¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -509,7 +509,7 @@ void delbybookname()
 	strcat(o,id);
 	if(mysql_real_query(mysql,o,(unsigned int)strlen(o)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÍ¼Êé³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤å›¾ä¹¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -517,16 +517,16 @@ void delbybookname()
 	strcat(n,id);
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞÖØĞÂÅÅĞòÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œé‡æ–°æ’åºæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
-	printf("Í¼ÊéÉ¾³ı³É¹¦£¬µ±Ç°Ê£ÓàËùÓĞÍ¼ÊéÊı¾İ½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦åˆ é™¤æˆåŠŸï¼Œå½“å‰å‰©ä½™æ‰€æœ‰å›¾ä¹¦æ•°æ®ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book ";
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -553,7 +553,7 @@ void delbywritername()
 	char s[100]=" select id from book where writer=";
 		printf("\n\n");
 	char name[20];
-	printf("ÇëÊäÈëÄúÒªÉ¾³ıµÄÍ¼ÊéµÄ×÷ÕßÃû³Æ:");
+	printf("è¯·è¾“å…¥æ‚¨è¦åˆ é™¤çš„å›¾ä¹¦çš„ä½œè€…åç§°:");
 	scanf("%s",name);
 	strcat(s,"'"); 
 	strcat(s,name);
@@ -561,7 +561,7 @@ void delbywritername()
 	char id[8];
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÍ¼Êé³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤å›¾ä¹¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -574,7 +574,7 @@ void delbywritername()
 	strcat(o,id);
 	if(mysql_real_query(mysql,o,(unsigned int)strlen(o)))
     {
-    	printf("Ö´ĞĞÉ¾³ıÍ¼Êé³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œåˆ é™¤å›¾ä¹¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -582,16 +582,16 @@ void delbywritername()
 	strcat(n,id);
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞÖØĞÂÅÅĞòÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œé‡æ–°æ’åºæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
-	printf("Í¼ÊéÉ¾³ı³É¹¦£¬µ±Ç°Ê£ÓàËùÓĞÍ¼ÊéÊı¾İ½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦åˆ é™¤æˆåŠŸï¼Œå½“å‰å‰©ä½™æ‰€æœ‰å›¾ä¹¦æ•°æ®ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book ";
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -618,8 +618,8 @@ int modifybook()
 	while(1)
 {
 	int choice;
-	printf("ÇëÑ¡ÔñÄúÒªĞŞ¸ÄµÄÄÚÈİ£º1.ÊéÃû,  2.×÷ÕßĞÕÃû,  3.ÓàÁ¿,  4.ÈÈ¶È   5.³ö°æÊ±¼ä, 6.ÀàĞÍ,7.ÍË³öĞŞ¸Ä·şÎñ\n");
-	printf("ÇëÊäÈëÄúµÄÑ¡Ôñ£º");
+	printf("è¯·é€‰æ‹©æ‚¨è¦ä¿®æ”¹çš„å†…å®¹ï¼š1.ä¹¦å,  2.ä½œè€…å§“å,  3.ä½™é‡,  4.çƒ­åº¦   5.å‡ºç‰ˆæ—¶é—´, 6.ç±»å‹,7.é€€å‡ºä¿®æ”¹æœåŠ¡\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©ï¼š");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -629,8 +629,8 @@ int modifybook()
 		case 4:modifyfans();break;
 		case 5:modifyyear();break;
 		case 6:modifytype();break;
-		case 7:printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öĞŞ¸Ä·şÎñ\n");return 0;
-		default:printf("\n\nÊäÈë¸ñÊ½²»ÕıÈ·£¬ÇëÖØĞÂÊäÈë\n\n");break;
+		case 7:printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºä¿®æ”¹æœåŠ¡\n");return 0;
+		default:printf("\n\nè¾“å…¥æ ¼å¼ä¸æ­£ç¡®ï¼Œè¯·é‡æ–°è¾“å…¥\n\n");break;
 	 } 
 }
 }
@@ -638,9 +638,9 @@ void modifybookname()
 {
 	char oldbookname[20];
 		printf("\n\n");
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÔ­Ãû:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦åŸå:");
 	scanf("%s",oldbookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÍ¼ÊéÃû³Æ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å›¾ä¹¦åç§°:");
 	char newbookname[20];
 	scanf("%s",newbookname);
 	char s[100]="update book set name = ";
@@ -652,11 +652,11 @@ void modifybookname()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÃû³ÆÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦åç§°æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼ÊéÃû³ÆĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦åç§°ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
@@ -664,7 +664,7 @@ void modifybookname()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -691,9 +691,9 @@ void modifywritername()
 {
 		printf("\n\n");
 	char bookname[20];
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÈ«³Ì:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦å…¨ç¨‹:");
 	scanf("%s",bookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄ×÷ÕßÃû³Æ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„ä½œè€…åç§°:");
 	char writername[20];
 	scanf("%s",writername);
 	char s[100]="update book set writer = ";
@@ -705,11 +705,11 @@ void modifywritername()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼Êé×÷ÕßĞÕÃûÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½œè€…å§“åæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼Êé×÷ÕßĞÕÃûĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦ä½œè€…å§“åä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
@@ -717,11 +717,11 @@ void modifywritername()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÍ¼Êé³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -745,9 +745,9 @@ void modifyremain()
 {
 		printf("\n\n");
 	char bookname[20];
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÈ«³Æ:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦å…¨ç§°:");
 	scanf("%s",bookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÍ¼ÊéÓàÁ¿:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å›¾ä¹¦ä½™é‡:");
 	char newremain[8];
 	scanf("%s",newremain);
 	char s[100]="update book set remain = ";
@@ -759,11 +759,11 @@ void modifyremain()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼ÊéÓàÁ¿ĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦ä½™é‡ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	int remain;
 	remain=newatoi(newremain);
@@ -778,7 +778,7 @@ void modifyremain()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	}
@@ -793,7 +793,7 @@ void modifyremain()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}	
 	}
@@ -803,11 +803,11 @@ void modifyremain()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÍ¼Êé³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -831,9 +831,9 @@ void modifyyear()
 {
 		printf("\n\n");
     char bookname[20];
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÈ«³Ì:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦å…¨ç¨‹:");
 	scanf("%s",bookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÍ¼Êé³ö°æÈÕÆÚ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å›¾ä¹¦å‡ºç‰ˆæ—¥æœŸ:");
 	char year[10];
 	scanf("%s",year);
 	char s[100]="update book set year = ";
@@ -845,22 +845,22 @@ void modifyyear()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼Êé³ö°æÈÕÆÚÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦å‡ºç‰ˆæ—¥æœŸæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼Êé³ö°æÈÕÆÚĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");	printf("\n\n");
+	printf("å›¾ä¹¦å‡ºç‰ˆæ—¥æœŸä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");	printf("\n\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
     strcat(m,bookname);
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÍ¼Êé³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -884,9 +884,9 @@ void modifyfans()
 {
 	char bookname[20];
 		printf("\n\n");
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÈ«³Æ:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦å…¨ç§°:");
 	scanf("%s",bookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÍ¼ÊéÈÈ¶È:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å›¾ä¹¦çƒ­åº¦:");
 	char fans[8];
 	scanf("%s",fans);
 	char s[100]="update book set fans = ";
@@ -898,11 +898,11 @@ void modifyfans()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÈÈ¶ÈÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦çƒ­åº¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼ÊéÈÈ¶È ĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦çƒ­åº¦ ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
@@ -910,11 +910,11 @@ void modifyfans()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÍ¼Êé³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -937,9 +937,9 @@ void modifytype()
 {
 	char bookname[20];
 		printf("\n\n");
-	printf("ÇëÊäÈëÄãÒªĞŞ¸ÄµÄÍ¼ÊéÈ«³Æ:");
+	printf("è¯·è¾“å…¥ä½ è¦ä¿®æ”¹çš„å›¾ä¹¦å…¨ç§°:");
 	scanf("%s",bookname);
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÍ¼ÊéÀàĞÍ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å›¾ä¹¦ç±»å‹:");
 	char type[20];
 	scanf("%s",type);
 	char s[100]="update book set type = ";
@@ -951,18 +951,18 @@ void modifytype()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞÍ¼ÊéÀàĞÍ Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œå›¾ä¹¦ç±»å‹ æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("Í¼ÊéÀàĞÍ ĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("å›¾ä¹¦ç±»å‹ ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 	char m[100]="select * from book where name=";
     strcat(m,"'");
     strcat(m,bookname);
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
@@ -989,11 +989,11 @@ void showalluser()
 	char s[200]="select * from users order by convert(username using gbk) asc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-		printf("²éÑ¯");
+		printf("æŸ¥è¯¢");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     int n=1;
@@ -1023,8 +1023,8 @@ int chaxun()
 	while(1)
 	{
 	int choice;
-	printf("²éÑ¯·½Ê½:  1.ÊéÃû²éÕÒ,  2.×÷Õß²éÕÒ, 3.Àà±ğ²éÕÒ ,4.Ä£ºı²éÕÒ,  5.³ö°æÄê·İ²éÕÒ, 6.ÏÔÊ¾µ±Ç°ËùÓĞÊé¼®, 7.²éÑ¯µ±Ç°ÓÃ»§ĞÅÏ¢, 8.²éÑ¯Í¼Êé½èÔÄ¼ÇÂ¼, 9.ÍË³ö²éÑ¯·şÎñ\n");
-	printf("ÇëÊäÈëÄúµÄ²éÑ¯·½Ê½:");
+	printf("æŸ¥è¯¢æ–¹å¼:  1.ä¹¦åæŸ¥æ‰¾,  2.ä½œè€…æŸ¥æ‰¾, 3.ç±»åˆ«æŸ¥æ‰¾ ,4.æ¨¡ç³ŠæŸ¥æ‰¾,  5.å‡ºç‰ˆå¹´ä»½æŸ¥æ‰¾, 6.æ˜¾ç¤ºå½“å‰æ‰€æœ‰ä¹¦ç±, 7.æŸ¥è¯¢å½“å‰ç”¨æˆ·ä¿¡æ¯, 8.æŸ¥è¯¢å›¾ä¹¦å€Ÿé˜…è®°å½•, 9.é€€å‡ºæŸ¥è¯¢æœåŠ¡\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„æŸ¥è¯¢æ–¹å¼:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -1036,15 +1036,15 @@ int chaxun()
 		case 6:showallbook();break;
 		case 7:showuserinfo();break;
 		case 8:showborrow();break;
-		case 9:printf("¸ĞĞ»ÄúÊ¹ÓÃ²éÑ¯·şÎñ£¬¼´½«ÍË³ö²éÑ¯·şÎñ\n");return 0;break;
-		default:printf("\n\nÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë\n\n");break;
+		case 9:printf("æ„Ÿè°¢æ‚¨ä½¿ç”¨æŸ¥è¯¢æœåŠ¡ï¼Œå³å°†é€€å‡ºæŸ¥è¯¢æœåŠ¡\n");return 0;break;
+		default:printf("\n\nè¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥\n\n");break;
 	}
 }
 }
 void selbyallbookname()
 {
 	char book_name[50];
-    printf("ÇëÊäÈëÄúÒª²éÕÒµÄÊéµÄÈ«³Æ:");
+    printf("è¯·è¾“å…¥æ‚¨è¦æŸ¥æ‰¾çš„ä¹¦çš„å…¨ç§°:");
     scanf("%s",book_name);
     char s[100]="select * from book where name=";
     strcat(s,"'");
@@ -1052,11 +1052,11 @@ void selbyallbookname()
     strcat(s,"'");
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1078,7 +1078,7 @@ void selbyallbookname()
 void selbywritername()
 {
     char writer_name[50];
-    printf("ÇëÊäÈëÄúÒª²éÕÒµÄ×÷ÕßµÄÈ«³Æ:");
+    printf("è¯·è¾“å…¥æ‚¨è¦æŸ¥æ‰¾çš„ä½œè€…çš„å…¨ç§°:");
     scanf("%s",writer_name);
     char s[100]="select * from book  where writer=";
     strcat(s,"'");
@@ -1087,11 +1087,11 @@ void selbywritername()
     strcat(s," order by convert(name using gbk) asc");
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1115,7 +1115,7 @@ void selbytype()
 	char s[100]="select  distinct type from book ";
      if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1128,14 +1128,14 @@ void selbytype()
   printf("\n");
   mysql_free_result(result);
   char type[20];
-  printf("ÇëÊäÈëÄúÏëÒª²éÑ¯µÄÀà±ğ:");
+  printf("è¯·è¾“å…¥æ‚¨æƒ³è¦æŸ¥è¯¢çš„ç±»åˆ«:");
   scanf("%s",type);
   char m[100]="select * from book where type='";
   strcat(m,type);
   strcat(m,"'");
   if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1160,7 +1160,7 @@ void selbytype()
 void selbyunclearname()
 {
     char book_name[50];
-    printf("ÇëÊäÈëÄúÒª²éÕÒµÄÊéµÄ¹Ø¼ü´Ê:");
+    printf("è¯·è¾“å…¥æ‚¨è¦æŸ¥æ‰¾çš„ä¹¦çš„å…³é”®è¯:");
     scanf("%s",book_name);
     char s[100]="select * from book  where name like ";
     strcat(s,"'");
@@ -1171,11 +1171,11 @@ void selbyunclearname()
     strcat(s," order by convert(name using gbk) asc");
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1197,18 +1197,18 @@ void selbyunclearname()
 void selbyyear()
 {
     char year[10];
-    printf("ÇëÊäÈëÄúÒª²éÕÒµÄÊéµÄ³ö°æÊ±¼ä:");
+    printf("è¯·è¾“å…¥æ‚¨è¦æŸ¥æ‰¾çš„ä¹¦çš„å‡ºç‰ˆæ—¶é—´:");
     scanf("%s",year);
     char s[100]="select * from book  where year= ";
     strcat(s,year);
     strcat(s," order by convert(name using gbk) asc"); 
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1232,8 +1232,8 @@ int showallbook()
 	int choice;
 	while (1)
 	{
-	printf("ÇëÑ¡ÔñÕ¹ÏÖ·½Ê½:  1ÊéºÅÉıĞò 2ÊéºÅ½µĞò 3ÊéÃûÉıĞò 4ÊéÃû½µĞò 5×÷ÕßÃûÉıĞò 6 ×÷ÕßÃû½µĞò 7 ÍË³ö\n");
-	printf("ÇëÊäÈëÄúµÄÑ¡Ôñ:");
+	printf("è¯·é€‰æ‹©å±•ç°æ–¹å¼:  1ä¹¦å·å‡åº 2ä¹¦å·é™åº 3ä¹¦åå‡åº 4ä¹¦åé™åº 5ä½œè€…åå‡åº 6 ä½œè€…åé™åº 7 é€€å‡º\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -1244,7 +1244,7 @@ int showallbook()
 		case 5:showbywriterup();break;
 		case 6:showbywriterdown();break;
 		case 7:return 0;break;
-		default:printf("ÊäÈëÎŞĞ§ÇëÖØĞÂÊäÈë\n");break;
+		default:printf("è¾“å…¥æ— æ•ˆè¯·é‡æ–°è¾“å…¥\n");break;
 	}
 }
 }
@@ -1253,11 +1253,11 @@ void showbyidup()
     char s[100]="select * from book order by id asc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1281,11 +1281,11 @@ void showbyiddown()
 	char s[100]="select * from book order by id desc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1309,11 +1309,11 @@ void showbynameup()
   char s[100]="select * from book  order by convert(name using gbk) asc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1337,11 +1337,11 @@ void showbynamedown()
  char s[100]="select * from book  order by convert(name using gbk) desc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1365,11 +1365,11 @@ void showbywriterup()
   char s[100]="select * from book  order by convert(writer using gbk) asc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1393,11 +1393,11 @@ void showbywriterdown()
 	char s[100]="select * from book  order by convert(writer using gbk) desc";
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1418,14 +1418,14 @@ void showbywriterdown()
 }
 void showuserinfo()
 {
-	printf("ÓÃ»§»ù±¾ĞÅÏ¢\n");
+	printf("ç”¨æˆ·åŸºæœ¬ä¿¡æ¯\n");
 	char o[100]="select * from users where username=";
     strcat(o,"'");
     strcat(o,username);
     strcat(o,"'");
     if(mysql_real_query(mysql,o,(unsigned int)strlen(o)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ÓÃ»§ĞÅÏ¢Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1446,14 +1446,14 @@ void showuserinfo()
   }
   mysql_free_result(result);
   printf("\n"); 
-  	printf("ÓÃ»§½èÔÄĞÅÏ¢\n");
+  	printf("ç”¨æˆ·å€Ÿé˜…ä¿¡æ¯\n");
   char m[100]="select * from borrow where username=";
     strcat(m,"'");
     strcat(m,username);
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ÓÃ»§ĞÅÏ¢Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1478,7 +1478,7 @@ void showuserinfo()
 void showborrow()
 {
     char book_name[50];
-    printf("ÇëÊäÈëÄúÒª²éÕÒµÄÊéµÄÈ«³Æ:");
+    printf("è¯·è¾“å…¥æ‚¨è¦æŸ¥æ‰¾çš„ä¹¦çš„å…¨ç§°:");
     scanf("%s",book_name);
     char s[100]="select * from borrow_list where bookname=";
     strcat(s,"'");
@@ -1486,11 +1486,11 @@ void showborrow()
     strcat(s,"'");
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1511,18 +1511,32 @@ void showborrow()
 }
 
 
-void jieshu()
+int jieshu()
 {
 	char book_name[50];
-    printf("ÇëÊäÈëÄúÒª½èÔÄµÄÊéµÄÈ«³Æ:");
+    printf("è¯·è¾“å…¥æ‚¨è¦å€Ÿé˜…çš„ä¹¦çš„å…¨ç§°:");
     scanf("%s",book_name);
+    char qqi[200]="select min(id) from book where name='";
+	strcat(qqi,book_name);
+	strcat(qqi,"'");
+	mysql_real_query(mysql,qqi,(unsigned int)strlen(qqi));
+	 result = mysql_store_result(mysql);
+    num_fields = mysql_num_fields(result);
+    while ((row = mysql_fetch_row(result)))
+   {
+   		if(row[0]==NULL)
+   	{
+   		printf("Sorry,our library do not have this book,please try again \n");
+   		return 0;
+	   }else break;
+   }
     char s[100]="select * from book where name=";
     strcat(s,"'");
     strcat(s,book_name);
     strcat(s,"'");
     if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1543,13 +1557,13 @@ void jieshu()
   }
     mysql_free_result(result);
 	int choice;
-	printf("\nÄúÈ·¶¨ÊÇ½èÔÄÕâ±¾ÊéÂğ?1.ÊÇ,2.²»ÊÇ\n");
-	printf("ÇëÊäÈëÄúµÄÑ¡Ôñ:");
+	printf("\næ‚¨ç¡®å®šæ˜¯å€Ÿé˜…è¿™æœ¬ä¹¦å—?1.æ˜¯,2.ä¸æ˜¯\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
 		case 1:suretob(book_name);break;
-		case 2:printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öÊé¼®½èÔÄ·şÎñ\n");break; 
+		case 2:printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºä¹¦ç±å€Ÿé˜…æœåŠ¡\n");break; 
 	}
 }
 int suretob(char *book_name)
@@ -1560,7 +1574,7 @@ int suretob(char *book_name)
 	char remain[8];
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Í¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else;
@@ -1577,7 +1591,7 @@ int suretob(char *book_name)
 	char remain2[8];
 	if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯¿É½èÔÄ´ÎÊı³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢å¯å€Ÿé˜…æ¬¡æ•°å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else;
@@ -1588,20 +1602,20 @@ int suretob(char *book_name)
     mysql_free_result(result);
     int remain3;
      remain3=newatoi(remain2);
-    printf("µ±Ç°¿É½èÔÄÍ¼ÊéÊıÁ¿Îª%d\n",remain3);
+    printf("å½“å‰å¯å€Ÿé˜…å›¾ä¹¦æ•°é‡ä¸º%d\n",remain3);
 	 if(remain1==0)
 {
-	 	printf("Õâ±¾Êé²»ÔÚÊé¼ÜÉÏ£¬ÎŞ·¨±»½è×ß£¬¼´½«ÍË³ö·şÎñ\n");
+	 	printf("è¿™æœ¬ä¹¦ä¸åœ¨ä¹¦æ¶ä¸Šï¼Œæ— æ³•è¢«å€Ÿèµ°ï¼Œå³å°†é€€å‡ºæœåŠ¡\n");
 	 	return 0;
 }
 	  else if(remain3==0)
 {
-	  	printf("ÄúµÄ½èÔÄ´ÎÊı²»×ã£¬ÎŞ·¨½èÔÄ£¬¼´½«ÍË³ö·şÎñ\n");
+	  	printf("æ‚¨çš„å€Ÿé˜…æ¬¡æ•°ä¸è¶³ï¼Œæ— æ³•å€Ÿé˜…ï¼Œå³å°†é€€å‡ºæœåŠ¡\n");
 	  	return 0;
 }
 	  else
 {
-	printf("Õâ±¾Êé¿ÉÒÔ½èÔÄ£¬ÕıÔÚÎªÄú°ìÀíÍ¼Êé½èÔÄÊÖĞø£¬ÇëÉÔµÈ\n");
+	printf("è¿™æœ¬ä¹¦å¯ä»¥å€Ÿé˜…ï¼Œæ­£åœ¨ä¸ºæ‚¨åŠç†å›¾ä¹¦å€Ÿé˜…æ‰‹ç»­ï¼Œè¯·ç¨ç­‰\n");
 	char ti[200]="insert into borrow_list (username,bookname,borrowtime) values('";
 	char pi[200]="insert into borrow values('";
 	strcat(ti,username);
@@ -1633,11 +1647,11 @@ int suretob(char *book_name)
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÊ£ÓàÍ¼Êé½èÔÄ´ÎÊıÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å‰©ä½™å›¾ä¹¦å€Ÿé˜…æ¬¡æ•°æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
-	printf("Í¼ÊéÒÑ¾­½èÔÄ£¬Äú¿ÉÒÔ½èÔÄ1¸öÔÂ,µ±Ç°ÓÃ»§ĞÅÏ¢Îª\n");
+	printf("å›¾ä¹¦å·²ç»å€Ÿé˜…ï¼Œæ‚¨å¯ä»¥å€Ÿé˜…1ä¸ªæœˆ,å½“å‰ç”¨æˆ·ä¿¡æ¯ä¸º\n");
 	showuserinfo();
 	char newremain1[8];
 	itoa(remain1,newremain1,10);
@@ -1650,7 +1664,7 @@ int suretob(char *book_name)
 	strcat(w,"'");
 	if(mysql_real_query(mysql,w,(unsigned int)strlen(w)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1660,7 +1674,7 @@ int suretob(char *book_name)
 	char remain4[8];
 	if(mysql_real_query(mysql,b,(unsigned int)strlen(b)))
     {
-    	printf("Ö´ĞĞ²éÑ¯µ±Ç°Í¼ÊéÈÈ¶È³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢å½“å‰å›¾ä¹¦çƒ­åº¦å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else;
@@ -1681,7 +1695,7 @@ int suretob(char *book_name)
 	strcat(v,"'");
 	if(mysql_real_query(mysql,v,(unsigned int)strlen(v)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÈÈ¶ÈÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦çƒ­åº¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}else ;
 	if(remain1==0)
@@ -1694,7 +1708,7 @@ int suretob(char *book_name)
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	}
@@ -1708,7 +1722,7 @@ int suretob(char *book_name)
 	strcat(n,"'");
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}	
 	}
@@ -1716,23 +1730,37 @@ int suretob(char *book_name)
 }
 
 
-void huanshu()
+int huanshu()
 {
 	char book_name[50];
 	showuserborrow();
-    printf("ÇëÊäÈëÄúÒª¹é»¹µÄÊéµÄÈ«³Æ:");
+    printf("è¯·è¾“å…¥æ‚¨è¦å½’è¿˜çš„ä¹¦çš„å…¨ç§°:");
     scanf("%s",book_name);
-    char s[200]="select * from borrow where username= '";
-    strcat(s,username);
-	strcat(s,"' and bookname = '");
-	strcat(s,book_name);
-	strcat(s,"'");
-    if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
-    {
-    	printf("Ö´ĞĞ²éÑ¯Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
-    	exit(1);
+    char qqi[200]="select min(borrowtime) from borrow where username='";
+	strcat(qqi,username);
+	strcat(qqi,"' and bookname = '");
+	strcat(qqi,book_name);
+	strcat(qqi,"'");
+	char maxid23[32];
+	mysql_real_query(mysql,qqi,(unsigned int)strlen(qqi));
+	result = mysql_store_result(mysql);
+    num_fields = mysql_num_fields(result);
+    while ((row = mysql_fetch_row(result)))
+	{
+		if(row[0]==NULL)
+		{printf("you do not have this Book borrowing records,please try again\n");
+		return 0;
+		}		
+		 strcpy(maxid23,row[0]);
 	}
-	else ;
+	char pi[200]=" select *   from borrow where borrowtime='";
+	strcat(pi,maxid23);
+	strcat(pi,"' and username ='");
+	strcat(pi,username);
+	strcat(pi,"' and bookname = '");
+	strcat(pi,book_name);
+	strcat(pi,"'");
+	mysql_real_query(mysql,pi,(unsigned int)strlen(pi));
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -1752,13 +1780,13 @@ void huanshu()
   printf("\n");
   mysql_free_result(result);
 	int choice;
-	printf("ÄúÈ·¶¨ÊÇ¹é»¹Õâ±¾ÊéÂğ?1.ÊÇ,2.²»ÊÇ\n");
-	printf("ÇëÊäÈëÄúµÄÑ¡Ôñ:");
+	printf("æ‚¨ç¡®å®šæ˜¯å½’è¿˜è¿™æœ¬ä¹¦å—?1.æ˜¯,2.ä¸æ˜¯\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
 		case 1:suretoh(book_name);break;
-		case 2:printf("¸ĞĞ»ÄúµÄÊ¹ÓÃ£¬¼´½«ÍË³öÊé¼®¹é»¹·şÎñ\n");break; 
+		case 2:printf("æ„Ÿè°¢æ‚¨çš„ä½¿ç”¨ï¼Œå³å°†é€€å‡ºä¹¦ç±å½’è¿˜æœåŠ¡\n");break; 
 	}
 } 
 int suretoh(char *book_name)
@@ -1773,16 +1801,16 @@ int suretoh(char *book_name)
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     if(row = mysql_fetch_row(result)==0)
-		 printf("³¬Ê±¹é»¹£¬ÇëÏòxxxÕËºÅ×ªÕË100ÔªÎ¥Ô¼½ğ\n");
+		 printf("è¶…æ—¶å½’è¿˜ï¼Œè¯·å‘xxxè´¦å·è½¬è´¦100å…ƒè¿çº¦é‡‘\n");
 	else 
-		printf("¹§Ï²ÄãÎ´³¬Ê±¹é»¹\n");
+		printf("æ­å–œä½ æœªè¶…æ—¶å½’è¿˜\n");
 		char s[100]="select remain from book where name='";
 	strcat(s,book_name)	;
 	strcat(s,"'");
 	char remain[8];
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞ²éÑ¯Í¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else;
@@ -1799,7 +1827,7 @@ int suretoh(char *book_name)
 	char remain2[8];
 	if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯¿É½èÔÄ´ÎÊı³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢å¯å€Ÿé˜…æ¬¡æ•°å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else;
@@ -1810,7 +1838,7 @@ int suretoh(char *book_name)
     mysql_free_result(result);
     int remain3;
      remain3=newatoi(remain2);	
-	printf("ÕıÔÚÎªÄú°ìÀíÍ¼Êé¹é»¹ÊÖĞø£¬ÇëÉÔµÈ\n");
+	printf("æ­£åœ¨ä¸ºæ‚¨åŠç†å›¾ä¹¦å½’è¿˜æ‰‹ç»­ï¼Œè¯·ç¨ç­‰\n");
 	remain1=remain1+1;
 	remain3=remain3+1;
 	char newremain2[8];
@@ -1824,7 +1852,7 @@ int suretoh(char *book_name)
 	strcat(k,"'");
 	if(mysql_real_query(mysql,k,(unsigned int)strlen(k)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÊ£ÓàÍ¼Êé½èÔÄ´ÎÊıÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å‰©ä½™å›¾ä¹¦å€Ÿé˜…æ¬¡æ•°æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1839,7 +1867,7 @@ int suretoh(char *book_name)
 	strcat(w,"'");
 	if(mysql_real_query(mysql,w,(unsigned int)strlen(w)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1853,7 +1881,7 @@ int suretoh(char *book_name)
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	}
@@ -1867,15 +1895,15 @@ int suretoh(char *book_name)
 	strcat(n,"'");
 	if(mysql_real_query(mysql,n,(unsigned int)strlen(n)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÍ¼ÊéÓàÁ¿Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹å›¾ä¹¦ä½™é‡æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}	
 	}
-	char ai[200]="select max(id) from borrow_list where username='";
+	char ai[200]="select min(id) from borrow_list where username='";
 	strcat(ai,username);
 	strcat(ai,"' and bookname = '");
 	strcat(ai,book_name);
-	strcat(ai,"'");
+	strcat(ai,"' and backtime = 0");
 	char maxid[32];
 	mysql_real_query(mysql,ai,(unsigned int)strlen(ai));
 	result = mysql_store_result(mysql);
@@ -1885,26 +1913,39 @@ int suretoh(char *book_name)
 	char ti[100]="update borrow_list set backtime = NOW() where id =";
 	strcat(ti,maxid);
 	mysql_real_query(mysql,ti,(unsigned int)strlen(ti));
-	char pi[100]=" delete from borrow where username='";
+	char qqi[200]="select min(borrowtime) from borrow where username='";
+	strcat(qqi,username);
+	strcat(qqi,"' and bookname = '");
+	strcat(qqi,book_name);
+	strcat(qqi,"'");
+	char maxid23[32];
+	mysql_real_query(mysql,qqi,(unsigned int)strlen(qqi));
+	result = mysql_store_result(mysql);
+    num_fields = mysql_num_fields(result);
+    while ((row = mysql_fetch_row(result)))
+   strcpy(maxid23,row[0]);
+	char pi[200]=" delete from borrow where borrowtime='";
+	strcat(pi,maxid23);
+	strcat(pi,"' and username ='");
 	strcat(pi,username);
 	strcat(pi,"' and bookname = '");
 	strcat(pi,book_name);
 	strcat(pi,"'");
 	mysql_real_query(mysql,pi,(unsigned int)strlen(pi));
-	printf("Í¼ÊéÒÑ¾­¹é»¹£¬µ±Ç°ÓÃ»§ĞÅÏ¢Îª\n");
+	printf("å›¾ä¹¦å·²ç»å½’è¿˜ï¼Œå½“å‰ç”¨æˆ·ä¿¡æ¯ä¸º\n");
     showuserinfo();      
 }
 
 void showuserborrow()
 {
-	printf("ÓÃ»§½èÔÄĞÅÏ¢\n");
+	printf("ç”¨æˆ·å€Ÿé˜…ä¿¡æ¯\n");
   char m[100]="select * from borrow where username=";
     strcat(m,"'");
     strcat(m,username);
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ÓÃ»§ĞÅÏ¢Ê±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else ;
@@ -1947,8 +1988,8 @@ int  useradmin()
 	while(1)
 {
     int choice;
-	printf("Ö§³ÖµÄÓÃ»§ĞÅÏ¢ĞŞ¸ÄÈçÏÂ:   1.ÓÃ»§ÃûĞŞ¸Ä,   2.ÃÜÂëĞŞ¸Ä,  3.ĞÔ±ğĞŞ¸Ä,   4.µ¥Î»ĞŞ¸Ä,    5.ÍË³öÍ¼ÓÃ»§ĞÅÏ¢ĞŞ¸Ä·şÎñ\n");
-	printf("ÇëÊäÈëÄúµÄÍ¼ÊéÊı¾İ¹ÜÀí·½Ê½:");
+	printf("æ”¯æŒçš„ç”¨æˆ·ä¿¡æ¯ä¿®æ”¹å¦‚ä¸‹:   1.ç”¨æˆ·åä¿®æ”¹,   2.å¯†ç ä¿®æ”¹,  3.æ€§åˆ«ä¿®æ”¹,   4.å•ä½ä¿®æ”¹,    5.é€€å‡ºå›¾ç”¨æˆ·ä¿¡æ¯ä¿®æ”¹æœåŠ¡\n");
+	printf("è¯·è¾“å…¥æ‚¨çš„å›¾ä¹¦æ•°æ®ç®¡ç†æ–¹å¼:");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -1956,14 +1997,14 @@ int  useradmin()
 		case 2:modifypass();break;
 		case 3:modifysex();break;
 		case 4:modifywork();break;
-		case 5:printf("¸ĞĞ»ÄúÊ¹ÓÃÓÃ»§ĞÅÏ¢ĞŞ¸Ä·şÎñ£¬¼´½«ÍË³öÓÃ»§ĞÅÏ¢ĞŞ¸Ä·şÎñ\n");return 0;
-		default:printf("\n\nÊäÈëÎŞĞ§£¬ÇëÖØĞÂÊäÈë\n\n");break;
+		case 5:printf("æ„Ÿè°¢æ‚¨ä½¿ç”¨ç”¨æˆ·ä¿¡æ¯ä¿®æ”¹æœåŠ¡ï¼Œå³å°†é€€å‡ºç”¨æˆ·ä¿¡æ¯ä¿®æ”¹æœåŠ¡\n");return 0;
+		default:printf("\n\nè¾“å…¥æ— æ•ˆï¼Œè¯·é‡æ–°è¾“å…¥\n\n");break;
 	}
 }
 }
 void modifyname()
 {
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÓÃ»§Ãû³Æ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„ç”¨æˆ·åç§°:");
 	char newusername[20];
 	scanf("%s",newusername);
 	char s[100]="update users set username = ";
@@ -1975,11 +2016,11 @@ void modifyname()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÓÃ»§ÃûÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹ç”¨æˆ·åæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("ÓÃ»§ÃûĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("ç”¨æˆ·åä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 		strcpy(username,newusername);
 	char m[100]="select * from users  where username=";
@@ -1988,11 +2029,11 @@ void modifyname()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÓÃ»§ĞÅÏ¢³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åç”¨æˆ·ä¿¡æ¯æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -2014,7 +2055,7 @@ void modifyname()
 }
 void modifypass()
 {
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÓÃ»§ÃÜÂë:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„ç”¨æˆ·å¯†ç :");
 	char newpassword[20];
 	scanf("%s",newpassword);
 	char s[100]="update users set password = ";
@@ -2026,11 +2067,11 @@ void modifypass()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÓÃ»§ÃûÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹ç”¨æˆ·åæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("ÓÃ»§ÃÜÂëĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("ç”¨æˆ·å¯†ç ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from users  where username=";
     strcat(m,"'");
@@ -2038,11 +2079,11 @@ void modifypass()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÓÃ»§ĞÅÏ¢³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åç”¨æˆ·ä¿¡æ¯æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -2064,7 +2105,7 @@ void modifypass()
 }
 void modifysex()
 {
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÓÃ»§ĞÔ±ğ:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„ç”¨æˆ·æ€§åˆ«:");
 	char newsex[20];
 	scanf("%s",newsex);
 	char s[100]="update users set sex = ";
@@ -2076,11 +2117,11 @@ void modifysex()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÓÃ»§ÃûÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹ç”¨æˆ·åæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("ÓÃ»§ÃÜÂëĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("ç”¨æˆ·å¯†ç ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from users  where username=";
     strcat(m,"'");
@@ -2088,11 +2129,11 @@ void modifysex()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÓÃ»§ĞÅÏ¢³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åç”¨æˆ·ä¿¡æ¯æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -2114,7 +2155,7 @@ void modifysex()
 }
 void modifywork()
 {
-	printf("ÇëÊäÈëĞŞ¸ÄºóµÄÓÃ»§ÃÜÂë:");
+	printf("è¯·è¾“å…¥ä¿®æ”¹åçš„ç”¨æˆ·å¯†ç :");
 	char workplace[20];
 	scanf("%s", workplace);
 	char s[100]="update users set workplace = ";
@@ -2126,11 +2167,11 @@ void modifywork()
 	strcat(s,"'");
 	if(mysql_real_query(mysql,s,(unsigned int)strlen(s)))
     {
-    	printf("Ö´ĞĞĞŞ¸ÄÓÃ»§ÃûÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡Œä¿®æ”¹ç”¨æˆ·åæ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("ÓÃ»§ÃÜÂëĞŞ¸Ä³É¹¦£¬ĞŞ¸Ä½á¹ûÈçÏÂ\n");
+	printf("ç”¨æˆ·å¯†ç ä¿®æ”¹æˆåŠŸï¼Œä¿®æ”¹ç»“æœå¦‚ä¸‹\n");
 		printf("\n\n");
 	char m[100]="select * from users  where username=";
     strcat(m,"'");
@@ -2138,11 +2179,11 @@ void modifywork()
     strcat(m,"'");
     if(mysql_real_query(mysql,m,(unsigned int)strlen(m)))
     {
-    	printf("Ö´ĞĞ²éÑ¯ĞŞ¸ÄºóÍ¼ÊéÊ±³öÏÖÒì³£: %s",mysql_error(mysql));
+    	printf("æ‰§è¡ŒæŸ¥è¯¢ä¿®æ”¹åå›¾ä¹¦æ—¶å‡ºç°å¼‚å¸¸: %s",mysql_error(mysql));
     	exit(1);
 	}
 	else
-	printf("²éÑ¯ĞŞ¸ÄºóÓÃ»§ĞÅÏ¢³É¹¦£¬²éÑ¯½á¹ûÈçÏÂ\n");
+	printf("æŸ¥è¯¢ä¿®æ”¹åç”¨æˆ·ä¿¡æ¯æˆåŠŸï¼ŒæŸ¥è¯¢ç»“æœå¦‚ä¸‹\n");
     result = mysql_store_result(mysql);
     num_fields = mysql_num_fields(result);
     while ((row = mysql_fetch_row(result)))
@@ -2185,4 +2226,3 @@ int newatoi(char *s)
     }  
     return n;  
 }
-
